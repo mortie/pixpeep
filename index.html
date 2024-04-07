@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>PixPeep</title>
+		<link rel="stylesheet" href="style.css">
+	</head>
+	<body>
+		<div id="container">
+			<div>
+				<canvas id="canvas"></canvas>
+				<div id="metaInfo"></data>
+			</div>
+
+			<div>
+				<input id="fileInput" type="file">
+				<select id="pixfmtInput">
+					<option value="rgb">RGB</option>
+					<option value="rgba">RGBA</option>
+					<option value="greyscale">Greyscale</option>
+					<option value="i420">I420</option>
+					<option value="nv12">NV12</option>
+					<option value="nv21">NV21</option>
+				</select>
+				<input id="widthInput" type="number" value="640">
+				x
+				<input id="heightInput" type="number" value="360">
+				<br>
+			</div>
+		</div>
+
+		<script src="pixfmt.js"></script>
+		<script src="script.js"></script>
+	</body>
+</html>

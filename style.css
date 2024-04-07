@@ -1,0 +1,17 @@
+#canvas {
+	border: 1px solid black;
+	min-height: 20vh;
+	max-width: 80vw;
+	max-height: 80vh;
+	image-rendering: -moz-crisp-edges;
+	image-rendering: -webkit-optimize-contrast;
+}
+
+#container {
+	margin: auto;
+	width: 80vw;
+}
+
+input[type=number] {
+	width: 80px;
+}
