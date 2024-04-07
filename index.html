@@ -6,25 +6,32 @@
 	</head>
 	<body>
 		<div id="container">
-			<div>
-				<canvas id="canvas"></canvas>
-				<div id="metaInfo"></data>
+			<canvas id="canvas" class="nearestNeighbour"></canvas>
+
+			<div id="controls">
+				<input id="fileInput" type="file">
+
+				<div style="text-align: center">
+					<select id="pixfmtInput">
+						<option value="rgb">RGB</option>
+						<option value="rgba">RGBA</option>
+						<option value="greyscale">Greyscale</option>
+						<option value="i420">I420</option>
+						<option value="nv12">NV12</option>
+						<option value="nv21">NV21</option>
+					</select>
+					<input id="widthInput" type="number" value="640">
+					x
+					<input id="heightInput" type="number" value="360">
+				</div>
+
+				<span id="metaInfo"></span>
 			</div>
 
+			<br>
+
 			<div>
-				<input id="fileInput" type="file">
-				<select id="pixfmtInput">
-					<option value="rgb">RGB</option>
-					<option value="rgba">RGBA</option>
-					<option value="greyscale">Greyscale</option>
-					<option value="i420">I420</option>
-					<option value="nv12">NV12</option>
-					<option value="nv21">NV21</option>
-				</select>
-				<input id="widthInput" type="number" value="640">
-				x
-				<input id="heightInput" type="number" value="360">
-				<br>
+				<a href="https://github.com/mortie/pixpeep">Source Code</a>
 			</div>
 		</div>
 

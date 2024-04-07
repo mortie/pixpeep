@@ -1,17 +1,36 @@
+#canvas.nearestNeighbour {
+	image-rendering: -moz-crisp-edges;
+	image-rendering: -webkit-optimize-contrast;
+	image-rendering: crisp-edges;
+}
+
 #canvas {
 	border: 1px solid black;
 	min-height: 20vh;
 	max-width: 80vw;
 	max-height: 80vh;
-	image-rendering: -moz-crisp-edges;
-	image-rendering: -webkit-optimize-contrast;
 }
 
 #container {
-	margin: auto;
-	width: 80vw;
+	left: 50%;
+	transform: translateX(-50%);
+	position: relative;
+	display: inline-block;
+}
+
+#controls {
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+}
+
+#metaInfo {
+	text-align: right;
 }
 
 input[type=number] {
 	width: 80px;
+}
+
+input[type=file] {
+	max-width: 180px;
 }

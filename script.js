@@ -34,9 +34,9 @@ function update() {
 	} else if (pixfmt == "i420") {
 		convertI420(imageData.data, data, width, height);
 	} else if (pixfmt == "nv12") {
-		convertNV12(imageData.data, data, width, height);
+		convertNV(imageData.data, data, width, height, 0, 1);
 	} else if (pixfmt == "nv21") {
-		convertNV21(imageData.data, data, width, height);
+		convertNV(imageData.data, data, width, height, 1, 0);
 	} else {
 		metaInfo.innerText += " -- Unknown pixfmt!";
 		return;

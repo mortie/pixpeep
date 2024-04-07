@@ -53,7 +53,7 @@ function convertI420(dest, src, width, height) {
 	}
 }
 
-function convertNV12(dest, src, width, height) {
+function convertNV(dest, src, width, height, u, v) {
 	let uvPlane = width * height;
 
 	for (let y = 0; y < height; ++y) {
@@ -63,24 +63,8 @@ function convertNV12(dest, src, width, height) {
 			yuvToRGBA(
 				dest, (y * width + x) * 4,
 				src[y * width + x],
-				src[uvPlane + uv],
-				src[uvPlane + uv + 1]);
-		}
-	}
-}
-
-function convertNV21(dest, src, width, height) {
-	let uvPlane = width * height;
-
-	for (let y = 0; y < height; ++y) {
-		for (let x = 0; x < width; ++x) {
-			let uv = Math.floor(y / 2) * width + Math.floor(x / 2) * 2;
-
-			yuvToRGBA(
-				dest, (y * width + x) * 4,
-				src[y * width + x],
-				src[uvPlane + uv + 1],
-				src[uvPlane + uv]);
+				src[uvPlane + uv + u],
+				src[uvPlane + uv + v]);
 		}
 	}
 }
