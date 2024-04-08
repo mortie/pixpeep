@@ -23,7 +23,6 @@ If you want to add a pixel format, here's what you do:
 
 * Add a function to convert from the pixel format to RGBA to pixfmt.js
 * Add an option to the `<select id="pixfmtInput">` in index.html
-* Add `else if (pixfmt == "yourformat") { convertYourFormat(...) }`
-  to script.js
+* Add a case to the `switch (pixfmt)` in script.js
 
 I'm also open to more substantive changes and new features.

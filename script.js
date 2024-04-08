@@ -25,19 +25,47 @@ function update() {
 
 	let imageData = ctx.createImageData(width, height);
 
-	if (pixfmt == "rgb") {
-		convertRGB(imageData.data, data, width, height);
-	} else if (pixfmt == "rgba") {
-		convertRGBA(imageData.data, data, width, height);
-	} else if (pixfmt == "greyscale") {
-		convertGreyscale(imageData.data, data, width, height);
-	} else if (pixfmt == "i420") {
-		convertI420(imageData.data, data, width, height);
-	} else if (pixfmt == "nv12") {
-		convertNV(imageData.data, data, width, height, 0, 1);
-	} else if (pixfmt == "nv21") {
-		convertNV(imageData.data, data, width, height, 1, 0);
-	} else {
+	let dest = imageData.data;
+	let src = data;
+
+	switch (pixfmt) {
+	case "rgb":
+		convertRGB(dest, src, width, height, 0, 1, 2);
+		break;
+	case "bgr":
+		convertRGB(dest, src, width, height, 2, 1, 0);
+		break;
+	case "rgba":
+		convertRGBA(dest, src, width, height, 0, 1, 2, 3);
+		break;
+	case "bgra":
+		convertRGBA(dest, src, width, height, 2, 1, 0, 3);
+		break;
+	case "argb":
+		convertRGBA(dest, src, width, height, 1, 2, 3, 0);
+		break;
+	case "abgr":
+		convertRGBA(dest, src, width, height, 3, 2, 1, 0);
+		break;
+	case "greyscale":
+		convertGreyscale(dest, src, width, height);
+		break;
+	case "i420":
+		convertI420(dest, src, width, height);
+		break;
+	case "nv12":
+		convertNV(dest, src, width, height, 0, 1);
+		break;
+	case "nv21":
+		convertNV(dest, src, width, height, 1, 0);
+		break;
+	case "yuyv":
+		convertPacked422(dest, src, width, height, 0, 2, 1, 3);
+		break;
+	case "yvyu":
+		convertPacked422(dest, src, width, height, 0, 2, 3, 1);
+		break;
+	default:
 		metaInfo.innerText += " -- Unknown pixfmt!";
 		return;
 	}

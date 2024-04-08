@@ -1,17 +1,24 @@
-function convertRGB(dest, src, width, height) {
+function convertRGB(dest, src, width, height, r, g, b) {
 	let srci = 0;
 	let desti = 0;
 	for (let i = 0; i < width * height; ++i) {
-		dest[desti++] = src[srci++];
-		dest[desti++] = src[srci++];
-		dest[desti++] = src[srci++];
+		dest[desti++] = src[srci + r];
+		dest[desti++] = src[srci + g];
+		dest[desti++] = src[srci + b];
 		dest[desti++] = 255;
+		srci += 3;
 	}
 }
 
-function convertRGBA(dest, src, width, height) {
+function convertRGBA(dest, src, width, height, r, g, b, a) {
+	let srci = 0;
+	let desti = 0;
 	for (let i = 0; i < width * height * 4; ++i) {
-		dest[i] = src[i];
+		dest[desti++] = src[srci + r];
+		dest[desti++] = src[srci + g];
+		dest[desti++] = src[srci + b];
+		dest[desti++] = src[srci + a];
+		srci += 4;
 	}
 }
 
@@ -66,5 +73,25 @@ function convertNV(dest, src, width, height, u, v) {
 				src[uvPlane + uv + u],
 				src[uvPlane + uv + v]);
 		}
+	}
+}
+
+function convertPacked422(dest, src, width, height, y1, y2, u, v) {
+	let srci = 0;
+	let desti = 0;
+	for (let i = 0; i < width * height; ++i) {
+		yuvToRGBA(dest, desti,
+			src[srci + y1],
+			src[srci + u],
+			src[srci + v]);
+		desti += 4;
+
+		yuvToRGBA(dest, desti,
+			src[srci + y2],
+			src[srci + u],
+			src[srci + v]);
+		desti += 4;
+
+		srci += 4;
 	}
 }
