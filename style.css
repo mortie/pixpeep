@@ -1,3 +1,11 @@
+body {
+	font-family: sans-serif;
+}
+
+h1 {
+	text-align: center;
+}
+
 #canvas.nearestNeighbour {
 	image-rendering: -moz-crisp-edges;
 	image-rendering: -webkit-optimize-contrast;
@@ -29,6 +37,12 @@
 
 #metaInfo {
 	text-align: right;
+}
+
+#info {
+	text-align: center;
+	max-width: 600px;
+	margin: auto;
 }
 
 input[type=number] {

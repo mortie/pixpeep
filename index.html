@@ -6,6 +6,8 @@
 		<link rel="stylesheet" href="style.css">
 	</head>
 	<body>
+		<h1>PixPeep</h1>
+
 		<div id="container">
 			<div id="canvasContainer">
 				<canvas id="canvas" class="nearestNeighbour"></canvas>
@@ -45,8 +47,22 @@
 			</div>
 
 			<br>
+			<br>
 
-			<div>
+			<div id="info">
+				When doing image processing of any kind,
+				debugging issues is often difficult.
+				Neither GDB nor printf provides good visibility into
+				the contents of image buffers.
+				<p>
+				PixPeep tries to make image buffers less opaque.
+				Write your image buffer to a file, load it into PixPeep,
+				configure width/height/pixel format/alpha mode,
+				and see what the buffer actually contains
+				at whatever stage in the pipeline they're from.
+				<p>
+				You can find test files to experiment <a href="./test-images/">here</a>.
+				<p>
 				<a href="https://github.com/mortie/pixpeep">Source Code</a>
 			</div>
 		</div>
