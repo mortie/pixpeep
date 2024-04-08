@@ -1,7 +1,5 @@
-/*.bgr
-/*.i420
-/*.nv12
-/*.nv21
-/*.rgb
-/*.yuyv
-/*.yvyu
+/*
+!/.gitignore
+!/Makefile
+!/*.png
+!/*.jpg
