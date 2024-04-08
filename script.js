@@ -91,6 +91,8 @@ function update() {
 		// If the image uses pre-multiplied alpha,
 		// that means the RGB values are multiplied by the alpha.
 		// Divide by the alpha again to go back to straight alpha.
+		// Once https://github.com/whatwg/html/pull/5371 is finalized
+		// and part of all browsers, we should be able to avoid this.
 		for (let y = 0; y < height; ++y) {
 			for (let x = 0; x < width; ++x) {
 				let pix = (y * width + x) * 4;
