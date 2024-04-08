@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<meta charset="utf-8">
 		<title>PixPeep</title>
 		<link rel="stylesheet" href="style.css">
 	</head>
@@ -28,9 +29,16 @@
 						<option value="yuyv">YUYV</option>
 						<option value="yvyu">YVYU</option>
 					</select>
+
 					<input id="widthInput" type="number" value="640">
 					x
 					<input id="heightInput" type="number" value="360">
+
+					<select id="alphaModeInput">
+						<option value="straight">Straight alpha</option>
+						<option value="ignore">Ignore alpha</option>
+						<option value="premultiplied">Pre-multiplied</option>
+					</select>
 				</div>
 
 				<span id="metaInfo">N/A</span>

@@ -24,7 +24,7 @@
 
 #controls {
 	display: grid;
-	grid-template-columns: 1fr 1fr 1fr;
+	grid-template-columns: 1fr 2fr 1fr;
 }
 
 #metaInfo {
@@ -33,8 +33,4 @@
 
 input[type=number] {
 	width: 80px;
-}
-
-input[type=file] {
-	max-width: 180px;
 }

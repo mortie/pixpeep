@@ -1,7 +1,8 @@
 let fileInput = document.getElementById("fileInput");
 let widthInput = document.getElementById("widthInput");
 let heightInput = document.getElementById("heightInput");
-let pixfmtinput = document.getElementById("pixfmtInput");
+let pixfmtInput = document.getElementById("pixfmtInput");
+let alphaModeInput = document.getElementById("alphaModeInput");
 
 let data = null;
 
@@ -17,8 +18,9 @@ function update() {
 	let width = parseInt(widthInput.value);
 	let height = parseInt(heightInput.value);
 	let pixfmt = pixfmtInput.value;
+	let alphaMode = alphaModeInput.value;
 
-	metaInfo.innerText = width + "x" + height + "/" + pixfmt;
+	metaInfo.innerText = width + "x" + height + " " + pixfmt;
 
 	canvas.width = width;
 	canvas.height = height;
@@ -66,7 +68,44 @@ function update() {
 		convertPacked422(dest, src, width, height, 0, 2, 3, 1);
 		break;
 	default:
-		metaInfo.innerText += " -- Unknown pixfmt!";
+		console.warn("Unknown pixel format:", pixfmt);
+		metaInfo.innerText += " -- Unknown pixel format!";
+		return;
+	}
+
+	// Canvas image data is assumed to be "straight" (i.e not pre-multiplied).
+	// Therefore, we have to convert the pixel buffer from a given alpha mode
+	// to straight alpha.
+	switch (alphaMode) {
+	case "straight":
+		break;
+	case "ignore":
+		for (let y = 0; y < height; ++y) {
+			for (let x = 0; x < width; ++x) {
+				let pix = (y * width + x) * 4;
+				dest[pix + 3] = 255;
+			}
+		}
+		break;
+	case "premultiplied":
+		// If the image uses pre-multiplied alpha,
+		// that means the RGB values are multiplied by the alpha.
+		// Divide by the alpha again to go back to straight alpha.
+		for (let y = 0; y < height; ++y) {
+			for (let x = 0; x < width; ++x) {
+				let pix = (y * width + x) * 4;
+				let alpha = dest[pix + 3] / 255;
+				if (alpha != 0) {
+					dest[pix + 0] /= alpha;
+					dest[pix + 1] /= alpha;
+					dest[pix + 2] /= alpha;
+				}
+			}
+		}
+		break;
+	default:
+		console.warn("Unknown alpha mode:", alphaMode);
+		metaInfo.innerText += " -- Unknown alpha mode!";
 		return;
 	}
 
@@ -93,6 +132,7 @@ fileInput.onchange = evt => {
 widthInput.onchange = update;
 heightInput.onchange = update;
 pixfmtInput.onchange = update;
+alphaModeInput.onchange = update;
 
 if (fileInput.files.length >= 1) {
 	loadFile(fileInput.files[0]);
