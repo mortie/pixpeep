@@ -47,9 +47,9 @@ function convertI420(dest, src, width, height) {
 	let vPlane = uPlane + Math.floor((width * height) / 4);
 
 	for (let y = 0; y < height; ++y) {
+		let uvRow = Math.floor(y / 2) * Math.ceil(width / 2);
 		for (let x = 0; x < width; ++x) {
-			let uv = Math.floor(y / 2) * Math.floor(width / 2) +
-				Math.floor(x / 2);
+			let uv = uvRow + Math.floor(x / 2);
 
 			yuvToRGBA(
 				dest, (y * width + x) * 4,
@@ -64,12 +64,14 @@ function convertNV(dest, src, width, height, u, v) {
 	let uvPlane = width * height;
 
 	for (let y = 0; y < height; ++y) {
+		let yRow = y * width;
+		let uvRow = Math.floor(y / 2) * Math.ceil(width / 2) * 2;
 		for (let x = 0; x < width; ++x) {
-			let uv = Math.floor(y / 2) * width + Math.floor(x / 2) * 2;
+			let uv = uvRow + Math.floor(x / 2) * 2;
 
 			yuvToRGBA(
 				dest, (y * width + x) * 4,
-				src[y * width + x],
+				src[yRow + x],
 				src[uvPlane + uv + u],
 				src[uvPlane + uv + v]);
 		}
@@ -77,21 +79,16 @@ function convertNV(dest, src, width, height, u, v) {
 }
 
 function convertPacked422(dest, src, width, height, y1, y2, u, v) {
-	let srci = 0;
-	let desti = 0;
-	for (let i = 0; i < width * height; ++i) {
-		yuvToRGBA(dest, desti,
-			src[srci + y1],
-			src[srci + u],
-			src[srci + v]);
-		desti += 4;
+	for (let y = 0; y < height; ++y) {
+		let yuvRow = y * Math.ceil(width / 2) * 4;
+		for (let x = 0; x < width; ++x) {
+			let yuv = yuvRow + Math.floor(x / 2) * 4;
 
-		yuvToRGBA(dest, desti,
-			src[srci + y2],
-			src[srci + u],
-			src[srci + v]);
-		desti += 4;
-
-		srci += 4;
+			yuvToRGBA(
+				dest, (y * width + x) * 4,
+				src[yuv + (x % 2 == 0 ? y1 : y2)],
+				src[yuv + u],
+				src[yuv + v]);
+		}
 	}
 }
