@@ -1,5 +1,5 @@
-function convertRGB(dest, src, width, height, r, g, b) {
-	let srci = 0;
+function convertRGB(dest, src, soffset, width, height, r, g, b) {
+	let srci = soffset;
 	let desti = 0;
 	for (let i = 0; i < width * height; ++i) {
 		dest[desti++] = src[srci + r];
@@ -10,8 +10,8 @@ function convertRGB(dest, src, width, height, r, g, b) {
 	}
 }
 
-function convertRGBA(dest, src, width, height, r, g, b, a) {
-	let srci = 0;
+function convertRGBA(dest, src, soffset, width, height, r, g, b, a) {
+	let srci = soffset;
 	let desti = 0;
 	for (let i = 0; i < width * height * 4; ++i) {
 		dest[desti++] = src[srci + r];
@@ -22,13 +22,15 @@ function convertRGBA(dest, src, width, height, r, g, b, a) {
 	}
 }
 
-function convertGreyscale(dest, src, width, height) {
+function convertGreyscale(dest, src, soffset, width, height) {
+	let srci = soffset;
 	let desti = 0;
 	for (let i = 0; i < width * height; ++i) {
-		dest[desti++] = src[i];
-		dest[desti++] = src[i];
-		dest[desti++] = src[i];
+		dest[desti++] = src[srci];
+		dest[desti++] = src[srci];
+		dest[desti++] = src[srci];
 		dest[desti++] = 255;
+		srci += 1;
 	}
 }
 
@@ -42,8 +44,9 @@ function yuvToRGBA(dest, i, y, u, v) {
 	dest[i + 3] = 255;
 }
 
-function convertI420(dest, src, width, height) {
-	let uPlane = width * height;
+function convertI420(dest, src, soffset, width, height) {
+	let yPlane = soffset;
+	let uPlane = yPlane + width * height;
 	let vPlane = uPlane + Math.floor((width * height) / 4);
 
 	for (let y = 0; y < height; ++y) {
@@ -53,15 +56,16 @@ function convertI420(dest, src, width, height) {
 
 			yuvToRGBA(
 				dest, (y * width + x) * 4,
-				src[y * width + x],
+				src[yPlane + y * width + x],
 				src[uPlane + uv],
 				src[vPlane + uv]);
 		}
 	}
 }
 
-function convertNV(dest, src, width, height, u, v) {
-	let uvPlane = width * height;
+function convertNV(dest, src, soffset, width, height, u, v) {
+	let yPlane = soffset;
+	let uvPlane = yPlane + width * height;
 
 	for (let y = 0; y < height; ++y) {
 		let yRow = y * width;
@@ -71,16 +75,16 @@ function convertNV(dest, src, width, height, u, v) {
 
 			yuvToRGBA(
 				dest, (y * width + x) * 4,
-				src[yRow + x],
+				src[yPlane + yRow + x],
 				src[uvPlane + uv + u],
 				src[uvPlane + uv + v]);
 		}
 	}
 }
 
-function convertPacked422(dest, src, width, height, y1, y2, u, v) {
+function convertPacked422(dest, src, soffset, width, height, y1, y2, u, v) {
 	for (let y = 0; y < height; ++y) {
-		let yuvRow = y * Math.ceil(width / 2) * 4;
+		let yuvRow = soffset + y * Math.ceil(width / 2) * 4;
 		for (let x = 0; x < width; ++x) {
 			let yuv = yuvRow + Math.floor(x / 2) * 4;
 
@@ -91,4 +95,67 @@ function convertPacked422(dest, src, width, height, y1, y2, u, v) {
 				src[yuv + v]);
 		}
 	}
+}
+
+let pixfmts = {
+	rgb: {
+		bpp: 3,
+		convert: (dest, src, soffset, width, height) =>
+			convertRGB(dest, src, soffset, width, height, 0, 1, 2),
+	},
+	bgr: {
+		bpp: 3,
+		convert: (dest, src, soffset, width, height) =>
+			convertRGB(dest, src, soffset, width, height, 2, 1, 0),
+	},
+	rgba: {
+		bpp: 4,
+		convert: (dest, src, soffset, width, height) =>
+			convertRGBA(dest, src, soffset, width, height, 0, 1, 2, 3),
+	},
+	bgra: {
+		bpp: 4,
+		convert: (dest, src, soffset, width, height) =>
+			convertRGBA(dest, src, soffset, width, height, 2, 1, 0, 3),
+	},
+	argb: {
+		bpp: 4,
+		convert: (dest, src, soffset, width, height) =>
+			convertRGBA(dest, src, soffset, width, height, 1, 2, 3, 0),
+	},
+	abgr: {
+		bpp: 4,
+		convert: (dest, src, soffset, width, height) =>
+			convertRGBA(dest, src, soffset, width, height, 3, 2, 1, 0),
+	},
+	greyscale: {
+		bpp: 1,
+		convert: (dest, src, soffset, width, height) =>
+			convertGreyscale(dest, src, soffset, width, height),
+	},
+	i420: {
+		bpp: 1.5,
+		convert: (dest, src, soffset, width, height) =>
+			convertI420(dest, src, soffset, width, height),
+	},
+	nv12: {
+		bpp: 1.5,
+		convert: (dest, src, soffset, width, height) =>
+			convertNV(dest, src, soffset, width, height, 0, 1),
+	},
+	nv21: {
+		bpp: 1.5,
+		convert: (dest, src, soffset, width, height) =>
+			convertNV(dest, src, soffset, width, height, 1, 0),
+	},
+	yuyv: {
+		bpp: 1.5,
+		convert: (dest, src, soffset, width, height) =>
+			convertPacked422(dest, src, soffset, width, height, 0, 2, 1, 3),
+	},
+	yvyu: {
+		bpp: 1.5,
+		convert: (dest, src, soffset, width, height) =>
+			convertPacked422(dest, src, soffset, width, height, 0, 2, 3, 1),
+	},
 }

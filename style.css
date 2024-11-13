@@ -45,6 +45,6 @@ h1 {
 	margin: auto;
 }
 
-input[type=number] {
+input[type=number], #byteOffsetInput {
 	width: 80px;
 }

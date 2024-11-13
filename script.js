@@ -3,6 +3,7 @@ let widthInput = document.getElementById("widthInput");
 let heightInput = document.getElementById("heightInput");
 let pixfmtInput = document.getElementById("pixfmtInput");
 let alphaModeInput = document.getElementById("alphaModeInput");
+let byteOffsetInput = document.getElementById("byteOffsetInput");
 
 let data = null;
 
@@ -30,48 +31,24 @@ function update() {
 	let dest = imageData.data;
 	let src = data;
 
-	switch (pixfmt) {
-	case "rgb":
-		convertRGB(dest, src, width, height, 0, 1, 2);
-		break;
-	case "bgr":
-		convertRGB(dest, src, width, height, 2, 1, 0);
-		break;
-	case "rgba":
-		convertRGBA(dest, src, width, height, 0, 1, 2, 3);
-		break;
-	case "bgra":
-		convertRGBA(dest, src, width, height, 2, 1, 0, 3);
-		break;
-	case "argb":
-		convertRGBA(dest, src, width, height, 1, 2, 3, 0);
-		break;
-	case "abgr":
-		convertRGBA(dest, src, width, height, 3, 2, 1, 0);
-		break;
-	case "greyscale":
-		convertGreyscale(dest, src, width, height);
-		break;
-	case "i420":
-		convertI420(dest, src, width, height);
-		break;
-	case "nv12":
-		convertNV(dest, src, width, height, 0, 1);
-		break;
-	case "nv21":
-		convertNV(dest, src, width, height, 1, 0);
-		break;
-	case "yuyv":
-		convertPacked422(dest, src, width, height, 0, 2, 1, 3);
-		break;
-	case "yvyu":
-		convertPacked422(dest, src, width, height, 0, 2, 3, 1);
-		break;
-	default:
+	let fmtdata = pixfmts[pixfmt];
+	if (!fmtdata) {
 		console.warn("Unknown pixel format:", pixfmt);
 		metaInfo.innerText += " -- Unknown pixel format!";
 		return;
 	}
+
+	let offsetStr = byteOffsetInput.value.trim();
+	let offset = parseInt(offsetStr);
+	if (isNaN(offset)) {
+		offset = 0;
+	}
+	if (offsetStr.endsWith("f") || offsetStr.endsWith("F")) {
+		offset *= width * height * fmtdata.bpp;
+	}
+	offset = Math.round(offset);
+
+	fmtdata.convert(dest, src, offset, width, height);
 
 	// Canvas image data is assumed to be "straight" (i.e not pre-multiplied).
 	// Therefore, we have to convert the pixel buffer from a given alpha mode
@@ -135,6 +112,7 @@ widthInput.onchange = update;
 heightInput.onchange = update;
 pixfmtInput.onchange = update;
 alphaModeInput.onchange = update;
+byteOffsetInput.onchange = update;
 
 if (fileInput.files.length >= 1) {
 	loadFile(fileInput.files[0]);
