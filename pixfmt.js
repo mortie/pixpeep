@@ -22,6 +22,28 @@ function convertRGBA(dest, src, soffset, width, height, r, g, b, a) {
 	}
 }
 
+function convertRGB565(dest, src, soffset, width, height, r, g, b, big_endian) {
+    let srci = soffset;
+    let desti = 0;
+    for (let i = 0; i < width * height; ++i) {
+		let pixel = (
+			big_endian ?
+				(src[srci] << 8) | src[srci+1] 
+				:(src[srci+1] << 8) | src[srci]
+		);
+		let third = 0x1f & pixel;
+		let second = 0x3f & (pixel >> 5);
+		let first = 0x1f & (pixel >> (5+6));
+
+        let pixels = [Math.round( first * 255.0 / 31.0), Math.round( second * 255.0 / 63.0), Math.round( third * 255.0 / 31.0)];
+        dest[desti++] = pixels[r];
+        dest[desti++] = pixels[g];
+        dest[desti++] = pixels[b];
+        dest[desti++] = 255;
+        srci += 2;
+    }
+}
+
 function convertGreyscale(dest, src, soffset, width, height) {
 	let srci = soffset;
 	let desti = 0;
@@ -107,6 +129,26 @@ let pixfmts = {
 		bpp: 3,
 		convert: (dest, src, soffset, width, height) =>
 			convertRGB(dest, src, soffset, width, height, 2, 1, 0),
+	},
+	rgb565: {
+		bpp: 2,
+		convert: (dest, src, soffset, width, height) =>
+			convertRGB565(dest, src, soffset, width, height, 0, 1, 2, false),
+	},
+	rgb565be: {
+		bpp: 2,
+		convert: (dest, src, soffset, width, height) =>
+			convertRGB565(dest, src, soffset, width, height, 0, 1, 2, true),
+	},
+	bgr565: {
+		bpp: 2,
+		convert: (dest, src, soffset, width, height) =>
+			convertRGB565(dest, src, soffset, width, height, 2, 1, 0, false),
+	},
+	bgr565be: {
+		bpp: 2,
+		convert: (dest, src, soffset, width, height) =>
+			convertRGB565(dest, src, soffset, width, height, 2, 1, 0, true),
 	},
 	rgba: {
 		bpp: 4,
