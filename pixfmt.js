@@ -130,7 +130,7 @@ let pixfmts = {
 		convert: (dest, src, soffset, width, height) =>
 			convertRGB(dest, src, soffset, width, height, 2, 1, 0),
 	},
-	rgb565: {
+	rgb565le: {
 		bpp: 2,
 		convert: (dest, src, soffset, width, height) =>
 			convertRGB565(dest, src, soffset, width, height, 0, 1, 2, false),
@@ -140,7 +140,7 @@ let pixfmts = {
 		convert: (dest, src, soffset, width, height) =>
 			convertRGB565(dest, src, soffset, width, height, 0, 1, 2, true),
 	},
-	bgr565: {
+	bgr565le: {
 		bpp: 2,
 		convert: (dest, src, soffset, width, height) =>
 			convertRGB565(dest, src, soffset, width, height, 2, 1, 0, false),

@@ -1,6 +1,6 @@
 FFMPEG = ffmpeg -loglevel warning
 
-FORMATS = rgb bgr rgba bgra argb abgr nv12 nv21 yuyv yvyu i420 rgb565 rgb565be bgr565 bgr565be
+FORMATS = rgb bgr rgba bgra argb abgr nv12 nv21 yuyv yvyu i420 rgb565le rgb565be bgr565le bgr565be
 IMAGES = \
 	$(patsubst %,peppers_267x267.%,$(FORMATS)) \
 	$(patsubst %,tulips_768x512.%,$(FORMATS)) \
@@ -64,20 +64,20 @@ all: $(IMAGES)
 %.i420: %.png
 	$(FFMPEG) -y -i $< -f rawvideo -pix_fmt yuv420p $@
 
-%.rgb565: %.jpg
-	$(FFMPEG) -y -i $< -f rawvideo -pix_fmt rgb565 $@
-%.rgb565: %.png
-	$(FFMPEG) -y -i $< -f rawvideo -pix_fmt rgb565 $@
+%.rgb565le: %.jpg
+	$(FFMPEG) -y -i $< -f rawvideo -pix_fmt rgb565le $@
+%.rgb565le: %.png
+	$(FFMPEG) -y -i $< -f rawvideo -pix_fmt rgb565le $@
 
 %.rgb565be: %.jpg
 	$(FFMPEG) -y -i $< -f rawvideo -pix_fmt rgb565be $@
 %.rgb565be: %.png
 	$(FFMPEG) -y -i $< -f rawvideo -pix_fmt rgb565be $@
 
-%.bgr565: %.jpg
-	$(FFMPEG) -y -i $< -f rawvideo -pix_fmt bgr565 $@
-%.bgr565: %.png
-	$(FFMPEG) -y -i $< -f rawvideo -pix_fmt bgr565 $@
+%.bgr565le: %.jpg
+	$(FFMPEG) -y -i $< -f rawvideo -pix_fmt bgr565le $@
+%.bgr565le: %.png
+	$(FFMPEG) -y -i $< -f rawvideo -pix_fmt bgr565le $@
 
 %.bgr565be: %.jpg
 	$(FFMPEG) -y -i $< -f rawvideo -pix_fmt bgr565be $@
